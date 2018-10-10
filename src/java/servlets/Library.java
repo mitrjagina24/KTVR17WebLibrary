@@ -66,7 +66,7 @@ public class Library extends HttpServlet {
             Book book = new Book(nameBook, author, new Integer(yearPublished), isbn, new Integer(countStr));
             bookFacade.create(book);
             request.setAttribute("book", book);
-            request.getRequestDispatcher(PageReturner.getPage("welcom")).forward(request, response);
+            request.getRequestDispatcher(PageReturner.getPage("welcome")).forward(request, response);
                 break;
             }
         case "/newReader":
@@ -80,7 +80,7 @@ public class Library extends HttpServlet {
             Reader reader = new Reader(name, surname, phone, city);
             readerFacade.create(reader);
             request.setAttribute("reader", reader);
-            request.getRequestDispatcher(PageReturner.getPage("welcom")).forward(request, response);
+            request.getRequestDispatcher(PageReturner.getPage("welcome")).forward(request, response);
                 break;
             }
         case "/showBooks":{
@@ -149,7 +149,7 @@ public class Library extends HttpServlet {
                 break;
             }
         default:
-            request.getRequestDispatcher(PageReturner.getPage("welcom")).forward(request, response);
+            request.getRequestDispatcher(PageReturner.getPage("welcome")).forward(request, response);
             break;
     }
     }
