@@ -14,7 +14,7 @@
     </head>
     <body>
         <h1>Назначение ролей!</h1>
-        <form action="addUserRole" method="POST">
+        <form action="changeUserRole" method="POST">
             <select name="user">
                 <c:forEach var="user" items="${listUsers}">
                     <option value="${user.id}">${user.login}</option>
@@ -25,7 +25,8 @@
                     <option value="${role.id}">${role.name}</option>
                 </c:forEach>
             </select>
-            <input type="submit" value="Назначить">
+            <input type="submit" name="setButton" value="Назначить">
+            <input type="submit" name="deleteButton" value="Удалить">
         </form>
     </body>
 </html>

@@ -27,7 +27,7 @@ import util.PageReturner;
     "/newRole",
     "/addRole",
     "/editUserRoles",
-    "/addUserRole"
+    "/changeUserRole"
 })
 public class Secure extends HttpServlet {
    
@@ -75,14 +75,22 @@ public class Secure extends HttpServlet {
             request.setAttribute("listRoles", listRoles);
             request.getRequestDispatcher(PageReturner.getPage("editUserRoles")).forward(request, response);
             break;
-        case "/addUserRole":
+        case "/changeUserRole":
             String userId = request.getParameter("user");
             String roleId = request.getParameter("role");
-            Reader reader = readerFacade.find(new Long(userId));
-            Role roleToUser = roleFacade.find(new Long(roleId));
-            UserRoles ur = new UserRoles(reader, roleToUser);
-            SecureLogic sl = new SecureLogic();
-            sl.addRoleToUser(ur);
+            if(request.getParameter("setButton") != null){
+                Reader reader = readerFacade.find(new Long(userId));
+                Role roleToUser = roleFacade.find(new Long(roleId));
+                UserRoles ur = new UserRoles(reader, roleToUser);
+                SecureLogic sl = new SecureLogic();
+                sl.addRoleToUser(ur);
+            }else if(request.getParameter("deleteButton") != null){
+                Reader reader = readerFacade.find(new Long(userId));
+                Role roleToUser = roleFacade.find(new Long(roleId));
+                UserRoles ur = new UserRoles(reader, roleToUser);
+                SecureLogic sl = new SecureLogic();
+                sl.deleteRoleToUser(ur);
+            }
             List<Reader> newListUsers = readerFacade.findAll();
             List<Role> newListRoles = roleFacade.findAll();
             request.setAttribute("listUsers", newListUsers);
