@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import session.ReaderFacade;
 import session.RoleFacade;
 import session.UserRolesFacade;
@@ -24,6 +25,9 @@ import util.PageReturner;
  * @author Melnikov
  */
 @WebServlet(name = "Secure", urlPatterns = {
+    "/showLogin",
+    "/login",
+    "/showLogin",
     "/newRole",
     "/addRole",
     "/editUserRoles",
@@ -49,10 +53,39 @@ public class Secure extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF8");
         String path = request.getServletPath();
+        HttpSession session = request.getSession(false);
+        Reader regUser=null;
+        if(session != null){
+            regUser=(Reader) session.getAttribute("user");
+        }
+        
+        SecureLogic sl = new SecureLogic();
         if(null != path)
             switch (path) {
+        case "/showLogin":
+                request.getRequestDispatcher(PageReturner.getPage("showLogin")).forward(request, response);
+            break;
+        case "/login":
+            String login = request.getParameter("login");
+            String password = request.getParameter("password");
+            Auth auth = new Auth();
+            Reader authReader = auth.isEnter(login, password);
+            if(authReader != null){
+                HttpSession newSession = request.getSession(true);
+                newSession.setAttribute("user", authReader);
+                request.setAttribute("info", "Вы увспешно вошли в систему!");
+            }else{
+                request.setAttribute("info", "Нет такого пользователя");
+            }
+            request.getRequestDispatcher(PageReturner.getPage("welcome")).forward(request, response);
+            break;
+            
         case "/newRole":
-            request.getRequestDispatcher(PageReturner.getPage("newRole")).forward(request, response);
+            if(!sl.isRole(regUser, "ADMIN")){
+                request.getRequestDispatcher(PageReturner.getPage("showLogin")).forward(request, response);
+            }else{
+                request.getRequestDispatcher(PageReturner.getPage("newRole")).forward(request, response);
+            }
             break;
         case "/addRole":
             String nameRole = request.getParameter("nameRole");
@@ -69,11 +102,15 @@ public class Secure extends HttpServlet {
             break;
             
         case "/editUserRoles":
-            List<Reader> listUsers = readerFacade.findAll();
-            List<Role> listRoles = roleFacade.findAll();
-            request.setAttribute("listUsers", listUsers);
-            request.setAttribute("listRoles", listRoles);
-            request.getRequestDispatcher(PageReturner.getPage("editUserRoles")).forward(request, response);
+            if(!sl.isRole(regUser, "ADMIN")){
+                request.getRequestDispatcher(PageReturner.getPage("showLogin")).forward(request, response);
+            }else{
+                List<Reader> listUsers = readerFacade.findAll();
+                List<Role> listRoles = roleFacade.findAll();
+                request.setAttribute("listUsers", listUsers);
+                request.setAttribute("listRoles", listRoles);
+                request.getRequestDispatcher(PageReturner.getPage("editUserRoles")).forward(request, response);
+            }
             break;
         case "/changeUserRole":
             String userId = request.getParameter("user");
@@ -82,13 +119,11 @@ public class Secure extends HttpServlet {
                 Reader reader = readerFacade.find(new Long(userId));
                 Role roleToUser = roleFacade.find(new Long(roleId));
                 UserRoles ur = new UserRoles(reader, roleToUser);
-                SecureLogic sl = new SecureLogic();
                 sl.addRoleToUser(ur);
             }else if(request.getParameter("deleteButton") != null){
                 Reader reader = readerFacade.find(new Long(userId));
                 Role roleToUser = roleFacade.find(new Long(roleId));
                 UserRoles ur = new UserRoles(reader, roleToUser);
-                SecureLogic sl = new SecureLogic();
                 sl.deleteRoleToUser(ur);
             }
             List<Reader> newListUsers = readerFacade.findAll();

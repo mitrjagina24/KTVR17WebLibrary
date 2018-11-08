@@ -5,6 +5,7 @@
  */
 package secure;
 
+import entity.Reader;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,5 +51,16 @@ public class SecureLogic {
             for(int i=0;i<n;i++){
                 userRolesFacade.remove(deleteUserRoles.get(i));
             }
+    }
+    public boolean isRole(Reader reader, String roleName){
+        List<UserRoles> listUserRoles = userRolesFacade.findByReader(reader);
+        Role role = roleFacade.findRoleByName(roleName);
+        int n = listUserRoles.size();
+        for(int i = 0; i < n; i++){
+            if(listUserRoles.get(i).getRole().equals(role)){
+                return true;
+            }
+        }
+        return false;
     }
 }
