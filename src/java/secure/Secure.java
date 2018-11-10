@@ -7,7 +7,9 @@ package secure;
 
 import entity.Reader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -68,24 +70,22 @@ public class Secure extends HttpServlet {
         case "/login":
             String login = request.getParameter("login");
             String password = request.getParameter("password");
-            Auth auth = new Auth();
-            Reader authReader = auth.isEnter(login, password);
-            if(authReader != null){
-                HttpSession newSession = request.getSession(true);
-                newSession.setAttribute("user", authReader);
-                request.setAttribute("info", "Вы увспешно вошли в систему!");
-            }else{
-                request.setAttribute("info", "Нет такого пользователя");
-            }
+            Reader user = readerFacade.findByLogin(login);
+            request.setAttribute("info", "Нет такого пользователя");
+            if(user != null)
+                if(password.equals(user.getPassword())){
+                    session = request.getSession(true);
+                    session.setAttribute("user", user);
+                    request.setAttribute("info", "Вы увспешно вошли в систему!");
+                }
             request.getRequestDispatcher(PageReturner.getPage("welcome")).forward(request, response);
             break;
-            
         case "/newRole":
             if(!sl.isRole(regUser, "ADMIN")){
                 request.getRequestDispatcher(PageReturner.getPage("showLogin")).forward(request, response);
-            }else{
-                request.getRequestDispatcher(PageReturner.getPage("newRole")).forward(request, response);
+                break;
             }
+            request.getRequestDispatcher(PageReturner.getPage("newRole")).forward(request, response);
             break;
         case "/addRole":
             String nameRole = request.getParameter("nameRole");
@@ -104,15 +104,24 @@ public class Secure extends HttpServlet {
         case "/editUserRoles":
             if(!sl.isRole(regUser, "ADMIN")){
                 request.getRequestDispatcher(PageReturner.getPage("showLogin")).forward(request, response);
-            }else{
-                List<Reader> listUsers = readerFacade.findAll();
-                List<Role> listRoles = roleFacade.findAll();
-                request.setAttribute("listUsers", listUsers);
-                request.setAttribute("listRoles", listRoles);
-                request.getRequestDispatcher(PageReturner.getPage("editUserRoles")).forward(request, response);
+                break;
             }
+            List<Reader> listUsers = readerFacade.findAll();
+            Map<Reader,Role>mapUsers=new HashMap<>();
+            int n = listUsers.size();
+            for(int i=0;i<n;i++){
+                mapUsers.put(listUsers.get(i), sl.getRole(listUsers.get(i)));
+            }
+            request.setAttribute("mapUsers", mapUsers);
+            List<Role> listRoles = roleFacade.findAll();
+            request.setAttribute("listRoles", listRoles);
+            request.getRequestDispatcher(PageReturner.getPage("editUserRoles")).forward(request, response);
             break;
         case "/changeUserRole":
+            if(!sl.isRole(regUser, "ADMIN")){
+                request.getRequestDispatcher(PageReturner.getPage("showLogin")).forward(request, response);
+                break;
+            }
             String userId = request.getParameter("user");
             String roleId = request.getParameter("role");
             if(request.getParameter("setButton") != null){
@@ -127,6 +136,12 @@ public class Secure extends HttpServlet {
                 sl.deleteRoleToUser(ur);
             }
             List<Reader> newListUsers = readerFacade.findAll();
+            Map<Reader,Role>newMapUsers=new HashMap<>();
+            int n1 = newListUsers.size();
+            for(int i=0;i<n1;i++){
+                newMapUsers.put(newListUsers.get(i), sl.getRole(newListUsers.get(i)));
+            }
+            request.setAttribute("mapUsers", newMapUsers);
             List<Role> newListRoles = roleFacade.findAll();
             request.setAttribute("listUsers", newListUsers);
             request.setAttribute("listRoles", newListRoles);

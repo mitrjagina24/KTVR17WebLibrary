@@ -6,6 +6,7 @@
 package secure;
 
 import entity.Reader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,11 +37,13 @@ public class SecureLogic {
     
     public void addRoleToUser(UserRoles ur){
         if(ur.getRole().getName().equals("ADMIN")){
+            this.deleteRoleToUser(ur);
             userRolesFacade.create(ur);
             Role addNewRole = roleFacade.findRoleByName("USER");
             UserRoles addedNewRoles = new UserRoles(ur.getReader(),addNewRole);
             userRolesFacade.create(addedNewRoles);
         }else if(ur.getRole().getName().equals("USER")){
+            if(!this.isRole(ur.getReader(), ur.getRole().getName()))
             userRolesFacade.create(ur);
         }
         
@@ -63,4 +66,34 @@ public class SecureLogic {
         }
         return false;
     }
+    /**
+     * Находим список ролей пользователя ur
+     * Проходим по списку:
+     *  если в элементе роль ADMIN -> записываем в role и переходим к следующему элементу, 
+     *  иначе, если есть роль USER -> записываем в role и переходим к следующему элементу,
+     * В результате в role буде старшая роль пользователя.
+     * @param user
+     * @return top role of user
+     */
+    public Role getRole(Reader user){
+        List<UserRoles> userRoles = userRolesFacade.findByReader(user);
+        List<Role>listRoles = roleFacade.findAll();
+        int n = userRoles.size();
+        int k = listRoles.size();
+        for(int i=0;i<n;i++){
+            for(int j=0;j<k;j++){
+                if(listRoles.get(j).equals(userRoles.get(i).getRole()) && "ADMIN".equals(listRoles.get(j).getName())){
+                    return listRoles.get(j);
+                }
+            }
+            for(int j=0;j<k;j++){
+                if(listRoles.get(j).equals(userRoles.get(i).getRole()) && "USER".equals(listRoles.get(j).getName())){
+                    return listRoles.get(j);
+                }
+            }
+        }
+        return null;
+    }
+        
+    
 }
