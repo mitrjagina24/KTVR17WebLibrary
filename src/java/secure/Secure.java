@@ -40,6 +40,21 @@ public class Secure extends HttpServlet {
     @EJB RoleFacade roleFacade;
     @EJB ReaderFacade readerFacade;
     @EJB UserRolesFacade userRolesFacade;
+
+    @Override
+    public void init() throws ServletException {
+        
+        List<Role> roles = roleFacade.findAll();
+        if(roles.isEmpty()){
+            Role roleAdmin = new Role();
+            roleAdmin.setName("ADMIN");
+            roleFacade.create(roleAdmin);
+            Reader admin = new Reader("admin", "admin", "4545454", "Йыхви", "admin", "admin");
+            readerFacade.create(admin);
+            UserRoles ur = new UserRoles(admin, roleAdmin);
+            userRolesFacade.create(ur);
+        }
+    }
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

@@ -6,7 +6,6 @@
 package secure;
 
 import entity.Reader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,11 +66,10 @@ public class SecureLogic {
         return false;
     }
     /**
-     * Находим список ролей пользователя ur
-     * Проходим по списку:
-     *  если в элементе роль ADMIN -> записываем в role и переходим к следующему элементу, 
-     *  иначе, если есть роль USER -> записываем в role и переходим к следующему элементу,
-     * В результате в role буде старшая роль пользователя.
+     * Проходим по списку userRoles, который содержит список ролей пользователя
+     *  Проходим по списку ролей и при соответствии роли ADMIN возвращаем (return) роль
+     *  Проходим по списку ролей и при соответствии роли USER возвращаем (return) роль
+     * Если никто не вернул роль, то возвращаетм null
      * @param user
      * @return top role of user
      */
