@@ -5,6 +5,8 @@
  */
 package secure;
 
+import entity.Reader;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.Context;
@@ -43,4 +45,7 @@ public class SecureLogic {
         }
         
     }
+    public void deleteUserRoles(Reader user){
+        List<UserRoles> listUserRoles = userRolesFacade.findByUser(user);
+}
 }
