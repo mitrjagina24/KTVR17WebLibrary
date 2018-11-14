@@ -129,7 +129,13 @@ public class Library extends HttpServlet {
             }
         case "/deleteBook":{
             String deleteBookId = request.getParameter("deleteBookId");
-            historyFacade.remove(deleteBookId);
+            Book book = bookFacade.find(new Long(deleteBookId));
+          
+           List <History>histories=historyFacade.fineByBook(book);
+           for (History history : histories){
+               historyFacade.remove(history);
+           } 
+           bookFacade.remove(book);
             List<Book> listBooks = bookFacade.findAll();
             request.setAttribute("listBooks", listBooks);
             request.getRequestDispatcher("/listBooks.jsp").forward(request, response);

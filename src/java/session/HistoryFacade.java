@@ -23,7 +23,7 @@ public class HistoryFacade extends AbstractFacade<History> {
     @EJB BookFacade bookFacade;
     
 
-    @PersistenceContext(unitName = "KTVR17WebLibraryPU")
+   @PersistenceContext(unitName = "KTVR17WebLibraryPU")
     private EntityManager em;
 
     @Override
@@ -53,6 +53,12 @@ public class HistoryFacade extends AbstractFacade<History> {
             this.remove(h);
         }
         bookFacade.remove(book);
+    }
+
+    public List<History> fineByBook(Book book) {
+        return em.createQuery("SELECT h FROM History h WHERE h.book = :book")
+                .setParameter("book", book)
+                .getResultList();
     }
     
 }
