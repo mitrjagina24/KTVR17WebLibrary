@@ -14,13 +14,12 @@
     </head>
     <body>
         <h1>Список выданных книг</h1>
-        <form action="returnBook" method="POST">
+        ${info}
             <ul>
                 <c:forEach var="history" items="${takeBooks}">
                     <li>Книга: ${history.book.nameBook} взята: ${history.reader.name} ${history.reader.surname}
-                        <input type="hidden" value="${history.id}" name="returnBookId"><button type="submit">Вернуть книгу</button></li>
+                        <a href="returnBook?historyId=${history.id}"> Вернуть книгу</a></li>
                 </c:forEach> 
             </ul>
-        </form>
     </body>
 </html>

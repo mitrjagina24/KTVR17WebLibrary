@@ -6,12 +6,12 @@
 package servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import util.PageReturner;
 
 /**
  *
@@ -38,11 +38,11 @@ public class Servlet1 extends HttpServlet {
         if("/page1".equals(path)){
             textToPage = "Текст для вставки в страницу page1";
             request.setAttribute("textToPage", textToPage);
-            request.getRequestDispatcher("/WEB-INF/pages/page1.jsp").forward(request, response);
+            request.getRequestDispatcher(PageReturner.getPage("page1")).forward(request, response);
         }else if("/page2".equals(path)){
             textToPage = "Текст для вставки в страницу page2";
             request.setAttribute("textToPage", textToPage);
-            request.getRequestDispatcher("/page2.jsp").forward(request, response);
+            request.getRequestDispatcher(PageReturner.getPage("welcome")).forward(request, response);
         }
     }
 

@@ -46,6 +46,7 @@ public class HistoryFacade extends AbstractFacade<History> {
                 .getResultList();
     }
     
+
     public void remove(String id) {
         Book book = bookFacade.find(new Long(id));
         List<History> histories =  this.find(book);
@@ -60,5 +61,6 @@ public class HistoryFacade extends AbstractFacade<History> {
                 .setParameter("book", book)
                 .getResultList();
     }
+
     
 }
