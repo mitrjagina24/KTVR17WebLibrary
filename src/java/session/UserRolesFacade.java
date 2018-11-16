@@ -31,10 +31,15 @@ public class UserRolesFacade extends AbstractFacade<UserRoles> {
         super(UserRoles.class);
     }
 
+<<<<<<< HEAD
     public List<UserRoles> findByUser(Reader reader) {
         return em.createQuery("SELECT ur FROM UserRoles ur WHERE ur.reader = :reader")
                 .setParameter("reader", reader)
                 .getResultList();
+=======
+    public List<UserRoles> findByUser(Reader user) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+>>>>>>> f6a0b2eacfef675a90012c6661601e91ddecdaf3
     }
     
 }

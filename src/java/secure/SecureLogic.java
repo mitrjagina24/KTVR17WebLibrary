@@ -45,6 +45,7 @@ public class SecureLogic {
         }
         
     }
+<<<<<<< HEAD
     public void deleteRoleToUser(Reader user){
         List<UserRoles> listUserRoles = userRolesFacade.findByUser(user);
         int n = listUserRoles.size();
@@ -73,4 +74,9 @@ public class SecureLogic {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+=======
+    public void deleteUserRoles(Reader user){
+        List<UserRoles> listUserRoles = userRolesFacade.findByUser(user);
+}
+>>>>>>> f6a0b2eacfef675a90012c6661601e91ddecdaf3
 }
