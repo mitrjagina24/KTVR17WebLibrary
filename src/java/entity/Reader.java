@@ -33,16 +33,19 @@ public class Reader {
     public Reader() {
     }
 
-    public Reader(String name, String surname, String phone, String city, String login, String password) {
+ 
+
+    public Reader( String name, String surname, String phone, String city, String login, String password, String salts) {
+        
         this.name = name;
         this.surname = surname;
         this.phone = phone;
         this.city = city;
         this.login = login;
         this.password = password;
+        this.salts = salts;
     }
 
-   
 
     public String getCity() {
         return city;
